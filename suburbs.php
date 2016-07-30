@@ -1,9 +1,7 @@
 <?php
-require 'header.php'
+require 'header.php';
+require 'DB.php';
 ?>
-<script>
-get("data.php?action=suburblist",function(reply){alert(reply);});
-</script>
           <div class="container">
               <div class="page-header">
                   <h1>Compare your suburb!</h1>
@@ -13,11 +11,24 @@ get("data.php?action=suburblist",function(reply){alert(reply);});
                   <div class="col-sm-6">
                       <select id="suburb1" class="form-control">
                           <option id="*">All of Geelong</option>
+<?php
+$results = $conn->query("SELECT DISTINCT(suburb) as suburb FROM RegisteredPets where type='Dog' ORDER BY suburb ASC");
+while($row = $results->fetch_assoc()) {
+	echo '<option id="'.$row["suburb"].'">'.$row["suburb"].'</option>';
+}
+?>
                       </select>
                   </div>
                   <div class="col-sm-6">
                       <select id="suburb2" class="form-control">
                           <option id="*">All of Geelong</option>
+<?php
+$results = $conn->query("SELECT DISTINCT(suburb) as suburb FROM RegisteredPets where type='Dog' ORDER BY suburb ASC");
+while($row = $results->fetch_assoc()) {
+    echo '<option id="'.$row["suburb"].'">'.$row["suburb"].'</option>';
+}
+$conn->close();
+?>
                       </select>
                   </div>
               </div>
