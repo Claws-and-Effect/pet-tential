@@ -13,3 +13,9 @@ function get(url, callback) {
 	xmlhttp.open("GET",url,true);
 	xmlhttp.send();
 }
+function MakeChart(JSON){
+
+
+
+
+}

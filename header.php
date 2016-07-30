@@ -24,7 +24,8 @@
     <!--[if lt IE 9]><script src="/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="/js/ie-emulation-modes-warning.js"></script>
 	<link rel="stylesheet" href="/css/styles.css">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <script src="/js/helpers.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -49,6 +50,7 @@
           <ul class="nav navbar-nav">
             <li><a href="/index.php">Home</a></li>
             <li><a href="/map.php">Map</a></li>
+            <li><a href="/suburbs.php">Suburb Data</a></li>
             <li><a href="#contact">Contact</a></li>
 <!--            <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
