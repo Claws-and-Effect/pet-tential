@@ -6,10 +6,14 @@ switch ($_GET["action"]){
 
 		if($result->num_rows > 0){
      		// output data of each row
-    		while($row = $result->fetch_assoc()) {
-        		echo "Incoming Felines: ".$row["IncomingFelines"].",Number of Felines: ".$row["NumberFelines"].",Percentage of Felines: ";
-        		echo $row["PercentageFelines"]. "<br>";
-    		}
+    		echo '{"results":['."\n";
+			while($row = $result->fetch_assoc()) {
+				echo '{"IncomingFelines":'.'"'.$row["IncomingFelines"].'"}';
+				echo '{"NumberFelines":'.'"'.$row["NumberFelines"].'"}';
+        		echo '{"PercentageFelines":'.'"'.$row["PercentageFelines"]."\"},\n";
+	    			
+			}
+			echo ']}';
 		}else{
     		echo "0 results";
 		}

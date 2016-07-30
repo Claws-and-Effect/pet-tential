@@ -42,7 +42,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Pet-tential</a>
+          <img class="navbar-brand" src="/paws.svg">
+          <p class="navbar-brand">Pet-tential</p>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
