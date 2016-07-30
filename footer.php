@@ -1,15 +1,9 @@
-<div class="mastfoot">
-            <div class="inner">
-              <p>GovHack 2016 Project by <i>Claws and Effect</i></p>
-              <p>Cover template for <a href="http://getbootstrap.com">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a></p>
-            </div>
-          </div>
-
-        </div>
-
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted"><a href="https://2016.hackerspace.govhack.org/content/pet-tential">GovHack 2016 Project</a> by <i>Claws and Effect</i>. <a href="https://github.com/Claws-and-Effect/pet-tential">Fork us on GitHub!</a></p>
       </div>
+    </footer>
 
-    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -21,3 +15,4 @@
     <script src="/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
+
