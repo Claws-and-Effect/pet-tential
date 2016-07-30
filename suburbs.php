@@ -18,6 +18,14 @@ while($row = $results->fetch_assoc()) {
 }
 ?>
                       </select>
+                  <div id="suburb1results"></div>
+<script>
+$(document).ready(function () {
+    $("#suburb1").change(function () {
+        $("#suburb1results").html($(this).val());
+    });
+});
+</script>
                   </div>
                   <div class="col-sm-6">
                       <select id="suburb2" class="form-control">
@@ -31,6 +39,7 @@ $conn->close();
 ?>
                       </select>
                   </div>
+                  <div class="suburb2"></div>
               </div>
           </div>
 <?php

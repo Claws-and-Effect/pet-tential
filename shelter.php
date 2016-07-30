@@ -7,15 +7,12 @@ get("data.php?action=felineshelter",function(reply){document.getElementById("sid
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0/Chart.bundle.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-<div class="container-fluid">
-	<div class="row shelterContent">
-		<div class="col-md-8" style="height: 500px;">
-			<div id="chartContainer" style="height:100%;"><canvas id="myChart"></canvas></div>
+<div class="container">
+	<div class="row">
+		<div id="chartContainer">
+			<canvas id="myChart"></canvas>
 		</div>
-		<div class="col-md-4">
-			<span id="sidebar">Hello</span>
-			<span>asdasdasdasdasdasdasdasdasdasd</span>
-		</div>
+		<span id="sidebar">Hello</span>
 	</div>
 </div>
 <script>
