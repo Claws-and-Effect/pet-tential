@@ -34,6 +34,22 @@ switch ($_GET["action"]){
             echo "0 results";
         }
 		break;
+	case "findanother":
+		if($_GET["param"] == "Breed"){
+			$conn->set_charset('utf8');
+			//$breed = $_GET["input"];
+			$breed = $conn->real_escape_string($_GET["input"]);
+			$result = $conn->query("SELECT COUNT(RegisteredPets.breed)as count, RegisteredPets.suburb, Suburbs.lat, Suburbs.lon as lng FROM RegisteredPets INNER JOIN Suburbs ON RegisteredPets.suburb=Suburbs.suburb WHERE type='Dog' AND breed='".$breed."' GROUP BY suburb ORDER BY COUNT(breed) DESC");
+			if($result->num_rows > 0){
+				echo JSONify($result);
+			}else{
+				echo "0 results";
+			}
+		}elseif($_GET["param"] == "Name"){
+
+		
+		}
+		break;
 	default:
 		echo "Invalid action";
 		break;
