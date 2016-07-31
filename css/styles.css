@@ -9,7 +9,7 @@ html,body {width:100%;height:100%;margin:0;padding:0;}
     left:0;
     right:0;
     margin-top:60px; /* adjust top margin to your header height */
-    margin-bottom:60px;
+    margin-bottom:30px;
 }
 .shelterContent{
 	display: block;

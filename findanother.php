@@ -3,6 +3,7 @@ require 'header.php';
 ?>
  	<div class="container-fluid">
     	<div id="underMap" class="content">
+			<div id="mapContainer" class="content"></div>
 			<!--i Modal Select breed or name-->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				<div class="modal-dialog" role="document">
@@ -12,44 +13,57 @@ require 'header.php';
         					<h4 class="modal-title" id="myModalLabel">Choose an option to display on map</h4>
       					</div>
       					<div class="modal-body">
-						<select id="choiceSelector" class="form-control">
-                    		<option class="choice">Breed</option>
-                    		<option class="choice">Name</option>
-                		</select>
-						<input type="text" class="form-control" id="breedOrName" placeholder="Breed or Name">
-						<br>
-					</div>
+							<select id="choiceSelector" class="form-control">
+                    			<option class="choice">Breed</option>
+                    			<option class="choice">Name</option>
+                			</select>
+							<input type="text" class="form-control" id="breedOrName" placeholder="Breed or Name">
+							<br>
+						</div>
       				<div class="modal-footer">
         				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       					<button id="Searcherino" type="button" class="btn btn-primary">Search</button>
 					</div>
     			</div>
   			</div>
-			<!-- Modal Info Display-->
-			<div class="modal" id="ModalInfo" style="width:500px; height:500px;">
-				<div class="modal-content">
-					<span class="close">x</span>
-					<span id="ModalStats"></span>
-				</div>	
 			</div>
+<nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">Breed or Name</button></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+</nav>
 		</div>
-		<div id="mapContainer" class="content"></div>
-		<!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="float:right;">
-        	Display Breed or Name on map
-        </button>
-		
 	</div>
     <script>
     var map;
 	var Circles = [];
-	var infoWindows = [];
-    function initMap() {
+	var Content = [];
+	var InfoWindows = [];
+	function initMap() {
     	map = new google.maps.Map(document.getElementById('mapContainer'), {
         center: {lat: -38.143543, lng: 144.359831},
-        zoom: 13
+        zoom: 11
         });
     }
+	function remove_circle(circle) {
+    	// remove event listers
+    	google.maps.event.clearListeners(circle, 'click_handler_name');
+    	google.maps.event.clearListeners(circle, 'drag_handler_name');
+    	circle.setRadius(0);
+    	circle.setMap(null);
+	}	
 	var choices = document.getElementsByClassName("choice");
 	for(var i = 0; i < choices.length; i++){
 		choices[i].addEventListener("click", function(message){
@@ -61,9 +75,23 @@ require 'header.php';
 		get("data.php?action=findanother&param="+document.getElementById("choiceSelector").value+"&input="+input,findanotherCallback)
 	});    
 	function findanotherCallback(reply){
+		if(reply.trim()  == "0 results"){
+			alert("No results found for '"+document.getElementById("breedOrName").value+"'");
+			document.getElementById("breedOrName").value = "";
+			document.getElementById("breedOrName").focus();
+			return;
+		}
+		//Clean up map from last stuff
+		for(var i = 0; i < Circles.length; i++){
+			remove_circle(Circles[i]);
+		}
+		for(var i = 0; i < InfoWindows.length; i++){
+			InfoWindows[i].close();
+		}
+		Circles = [];
+		Content = [];	
+		InfoWindows = [];
 		var Data = JSON.parse(reply);
-		Markers = [];
-		infoWindows =[];
 		for(var counter = 0; counter < Data.results.length; counter++){
 			var lat = parseFloat(Data.results[counter].lat);
 			var lng = parseFloat(Data.results[counter].lng);
@@ -77,17 +105,25 @@ require 'header.php';
             	center: {lat: lat, lng: lng},
             	radius: Math.sqrt(Data.results[counter].count) * 100
           	});
-			var outputString = "Number of Doggos here:"+Data.results[counter].count;
 			circle.addListener('click', function(){
+				var index = Circles.indexOf(this);
+				var content = Content[index];
 				var infowindow = new google.maps.InfoWindow({
-                	content: outputString,
-                	position: {lat: this.lat, lng: this.lng}
-            	});
+					content: content,
+					position: {lat: this.center.lat(), lng: this.center.lng()}
+				});
+				InfoWindows.push(infowindow);
 				infowindow.open(map);
-				alert(Data.results[counter].lat);
 			});
+			var doggo = document.getElementById("breedOrName").value;
+			if(doggo == ""){
+				Content.push("All dogs in "+Data.results[counter].suburb+": "+Data.results[counter].count);
+			}else{
+				Content.push("Number of '"+doggo+"s' in "+Data.results[counter].suburb+": "+Data.results[counter].count);
+			}
 			Circles.push(circle);
 		}
+		$("#myModal").modal("hide");
 	}
 	
 	</script>

@@ -51,7 +51,7 @@
             <li><a href="/index.php">Home</a></li>
             <li><a href="/findanother.php">Map</a></li>
             <li><a href="/suburbs.php">Suburb Data</a></li>
-            <li><a href="/data.php">Data</a></li>
+            <li><a href="/datasources.php">Data</a></li>
 <!--            <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu">
