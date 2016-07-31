@@ -42,6 +42,7 @@ require 'header.php';
            			<button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">Breed or Name</button>
 					<button id="DogAttacksBtn" type="button" class="btn btn-primary navbar-btn">Dog Attacks</button>
        				<button id="NoiseComplaintsBtn" type="button" class="btn btn-primary navbar-btn">Noise Complaints</button>
+					<button id="WalkingAreasBtn" type="button" class="btn btn-primary navbar-btn">Dog Walking Areas</button>
 				</div><!--/.nav-collapse -->
       		</div>
 		</nav>
@@ -52,6 +53,7 @@ require 'header.php';
 	var Circles = [];
 	var Content = [];
 	var InfoWindows = [];
+	var Markers = [];
 	function initMap() {
     	map = new google.maps.Map(document.getElementById('mapContainer'), {
         center: {lat: -38.143543, lng: 144.359831},
@@ -82,8 +84,8 @@ require 'header.php';
 	document.getElementById("NoiseComplaintsBtn").addEventListener("click", function(){
         get("data.php?action=noisecomplaints",showNoiseComplaints);
     });
-	document.getElementById("WalkingAreaBtn").addEventListener("click", function(){
-        get("data.php?action=walkingarea",showWalkingAreas);
+	document.getElementById("WalkingAreasBtn").addEventListener("click", function(){
+        get("data.php?action=walkingareas",showWalkingAreas);
     });
 	//AJAXin'
 	function findanotherCallback(reply){
@@ -136,9 +138,14 @@ require 'header.php';
         for(var i = 0; i < InfoWindows.length; i++){
             InfoWindows[i].close();
         }
+		for(var i = 0; i < Markers.length; i++){
+			Markers[i].setMap(null);
+			Markers[i] = null;
+		}
         Circles = [];
         Content = [];
         InfoWindows = [];
+		Markers = [];
 	}
 	//AJAXin'
 	function showDogAttacks(reply){
@@ -211,8 +218,6 @@ require 'header.php';
 
 	}
 	function showWalkingAreas(reply){
-		alert(reply);
-		return;
 		if(reply.trim()  == "0 results"){
             alert("No results found");
             return;
@@ -222,28 +227,26 @@ require 'header.php';
         for(var counter = 0; counter < Data.results.length; counter++){
             var lat = parseFloat(Data.results[counter].lat);
             var lng = parseFloat(Data.results[counter].lng);
-            var circle = new google.maps.Circle({
-                strokeColor: '#0000FF',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: '#0000FF',
-                fillOpacity: 0.35,
+            var marker = new google.maps.Marker({
                 map: map,
-                center: {lat: lat, lng: lng},
-                radius: Math.sqrt(Data.results[counter].count) * 100
+                position: {lat: lat, lng: lng},
             });
-            circle.addListener('click', function(){
-                var index = Circles.indexOf(this);
+            marker.addListener('click', function(){
+                var index = Markers.indexOf(this);
                 var content = Content[index];
                 var infowindow = new google.maps.InfoWindow({
                     content: content,
-                    position: {lat: this.center.lat(), lng: this.center.lng()}
                 });
                 InfoWindows.push(infowindow);
-                infowindow.open(map);
+                infowindow.open(map, this);
             });
-            Content.push(Data.results[counter].suburb+" has "+Data.results[counter].count+" noise complaints");
-            Circles.push(circle);
+			var rlt = Data.results[counter];
+			var stats = rlt.status;
+			if(stats.trim() == "no"){
+				stats = "onleash";
+			}
+            Content.push("Name: "+rlt.name+"<br>Location: "+rlt.suburb+", "+rlt.postcode+"<br>Comment: "+rlt.comment+"<br>Status: "+stats+"<br>Duration: "+rlt.start+" - "+rlt.finish);
+            Markers.push(marker);
         }
 	}
 	</script>

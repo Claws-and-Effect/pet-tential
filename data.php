@@ -82,11 +82,7 @@ switch ($_GET["action"]){
         }
 		break;
 	case "walkingareas":
-		$result = $conn->query("SELECT NoiseComplaints.suburb, SUM(NoiseComplaints.number) as count,Suburbs.lat as lat, Suburbs.lon as lng
-                                FROM `NoiseComplaints`
-                                INNER JOIN `Suburbs` ON NoiseComplaints.suburb=Suburbs.suburb
-                                GROUP BY Suburb DESC
-                                ORDER BY count DESC");
+		$result = $conn->query("SELECT name, lat, lon as lng, suburb, postcode, comment, status, start, finish FROM `WalkingArea`");
         if($result->num_rows > 0){
             echo JSONify($result);
         }else{
