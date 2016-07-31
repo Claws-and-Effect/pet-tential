@@ -3,7 +3,7 @@ require 'header.php';
 ?>
  	<div class="container-fluid">
     	<div id="underMap" class="content">
-			<!-- Modal -->
+			<!--i Modal Select breed or name-->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
@@ -25,6 +25,13 @@ require 'header.php';
 					</div>
     			</div>
   			</div>
+			<!-- Modal Info Display-->
+			<div class="modal" id="ModalInfo" style="width:500px; height:500px;">
+				<div class="modal-content">
+					<span class="close">x</span>
+					<span id="ModalStats"></span>
+				</div>	
+			</div>
 		</div>
 		<div id="mapContainer" class="content"></div>
 		<!-- Button trigger modal -->
@@ -35,6 +42,8 @@ require 'header.php';
 	</div>
     <script>
     var map;
+	var Circles = [];
+	var infoWindows = [];
     function initMap() {
     	map = new google.maps.Map(document.getElementById('mapContainer'), {
         center: {lat: -38.143543, lng: 144.359831},
@@ -52,12 +61,33 @@ require 'header.php';
 		get("data.php?action=findanother&param="+document.getElementById("choiceSelector").value+"&input="+input,findanotherCallback)
 	});    
 	function findanotherCallback(reply){
-		alert(reply);
-		var marker = new google.maps.Marker({
-		position: {lat: 35.55555, lng: 145.2123123},
-		map: map,
-		title: "testerino!"
-		});
+		var Data = JSON.parse(reply);
+		Markers = [];
+		infoWindows =[];
+		for(var counter = 0; counter < Data.results.length; counter++){
+			var lat = parseFloat(Data.results[counter].lat);
+			var lng = parseFloat(Data.results[counter].lng);
+			var circle = new google.maps.Circle({
+            	strokeColor: '#FF0000',
+            	strokeOpacity: 0.8,
+            	strokeWeight: 2,
+            	fillColor: '#FF0000',
+            	fillOpacity: 0.35,
+            	map: map,
+            	center: {lat: lat, lng: lng},
+            	radius: Math.sqrt(Data.results[counter].count) * 100
+          	});
+			var outputString = "Number of Doggos here:"+Data.results[counter].count;
+			circle.addListener('click', function(){
+				var infowindow = new google.maps.InfoWindow({
+                	content: outputString,
+                	position: {lat: this.lat, lng: this.lng}
+            	});
+				infowindow.open(map);
+				alert(Data.results[counter].lat);
+			});
+			Circles.push(circle);
+		}
 	}
 	
 	</script>

@@ -10,7 +10,7 @@ switch ($_GET["action"]){
 		}
 		echo '<table class="table">
 <thead><tr><th>Statistic</th><th>Result</th><th>Count</th></tr></thead>';
-        $result = $conn->query("SELECT suburb, COUNT(*) AS magnitude FROM RegisteredPets where type='Dog' AND ".$search." GROUP BY suburb ORDER BY magnitude DESC LIMIT 1");
+        $result = $conn->query("SELECT suburb, COUNT(*) AS magnitude FROM RegisteredPets where type='Dog' AND ".$search." ORDER BY magnitude");
         if($result->num_rows > 0){
             $row = $result->fetch_assoc();
             echo "<tr><td>Total dogs</td><td></td><td>".$row["magnitude"]."</td></tr>";
@@ -35,6 +35,27 @@ switch ($_GET["action"]){
         if($result->num_rows > 0){
             $row = $result->fetch_assoc();
             echo "<tr><td>Most popular colour</td><td>".$row["colour"]."</td><td>".$row["magnitude"]."</td></tr>";
+        }else{
+            echo "";
+        }
+        $result = $conn->query("SELECT suburb, COUNT(*) AS magnitude FROM WalkingArea where ".$search);
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            echo "<tr><td>Number of dog walking areas</td><td></td><td>".$row["magnitude"]."</td></tr>";
+        }else{
+            echo "";
+        }
+        $result = $conn->query("SELECT suburb, COUNT(*) AS magnitude FROM DogAttacks where ".$search);
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            echo "<tr><td>Number of dog attacks</td><td></td><td>".$row["magnitude"]."</td></tr>";
+        }else{
+            echo "";
+        }
+        $result = $conn->query("SELECT suburb, SUM(number) AS magnitude FROM NoiseComplaints where ".$search);
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            echo "<tr><td>Number of noise complaints</td><td></td><td>".$row["magnitude"]."</td></tr>";
         }else{
             echo "";
         }
