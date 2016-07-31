@@ -58,7 +58,35 @@ switch ($_GET["action"]){
 		}
 		break;
 	case "dogattacks":
-		$result = $conn->query("SELECT suburb, SUM(number) as number FROM `NoiseComplaints` GROUP BY Suburb DESC ORDER BY number DESC");
+		$result = $conn->query("SELECT DogAttacks.suburb, COUNT(DogAttacks.suburb) as count,Suburbs.lat as lat, Suburbs.lon as lng 
+								FROM `DogAttacks` 
+								INNER JOIN `Suburbs` ON DogAttacks.suburb=Suburbs.suburb 
+								GROUP BY Suburb DESC 
+								ORDER BY count DESC");
+        if($result->num_rows > 0){
+            echo JSONify($result);
+        }else{
+            echo "0 results";
+        }
+		break;
+	case "noisecomplaints":
+		 $result = $conn->query("SELECT NoiseComplaints.suburb, SUM(NoiseComplaints.number) as count,Suburbs.lat as lat, Suburbs.lon as lng 
+								FROM `NoiseComplaints` 
+								INNER JOIN `Suburbs` ON NoiseComplaints.suburb=Suburbs.suburb 
+								GROUP BY Suburb DESC 
+								ORDER BY count DESC");
+        if($result->num_rows > 0){
+            echo JSONify($result);
+        }else{
+            echo "0 results";
+        }
+		break;
+	case "walkingareas":
+		$result = $conn->query("SELECT NoiseComplaints.suburb, SUM(NoiseComplaints.number) as count,Suburbs.lat as lat, Suburbs.lon as lng
+                                FROM `NoiseComplaints`
+                                INNER JOIN `Suburbs` ON NoiseComplaints.suburb=Suburbs.suburb
+                                GROUP BY Suburb DESC
+                                ORDER BY count DESC");
         if($result->num_rows > 0){
             echo JSONify($result);
         }else{

@@ -3,47 +3,48 @@ require 'header.php';
 ?>
  	<div class="container-fluid">
     	<div id="underMap" class="content">
-			<div id="mapContainer" class="content"></div>
+			<div id="mapContainer" class="content">
+			</div>
 			<!--i Modal Select breed or name-->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
       					<div class="modal-header">
-        					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        					<h4 class="modal-title" id="myModalLabel">Choose an option to display on map</h4>
+       						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       						<h4 class="modal-title" id="myModalLabel">Choose an option to display on map</h4>
       					</div>
       					<div class="modal-body">
 							<select id="choiceSelector" class="form-control">
-                    			<option class="choice">Breed</option>
-                    			<option class="choice">Name</option>
-                			</select>
+                   				<option class="choice">Breed</option>
+                   				<option class="choice">Name</option>
+               				</select>
 							<input type="text" class="form-control" id="breedOrName" placeholder="Breed or Name">
 							<br>
 						</div>
       				<div class="modal-footer">
-        				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      					<button id="Searcherino" type="button" class="btn btn-primary">Search</button>
+	       				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+     						<button id="Searcherino" type="button" class="btn btn-primary">Search</button>
 					</div>
     			</div>
   			</div>
-			</div>
-<nav class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">Breed or Name</button></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-</nav>
+		</div>
+		<nav class="navbar navbar-default">
+      		<div class="container">
+       			<div class="navbar-header">
+         				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+           				<span class="sr-only">Toggle navigation</span>
+           				<span class="icon-bar"></span>
+           				<span class="icon-bar"></span>
+           				<span class="icon-bar"></span>
+         				</button>
+       			</div>
+       			<div id="navbar" class="collapse navbar-collapse">
+           			<button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">Breed or Name</button>
+					<button id="DogAttacksBtn" type="button" class="btn btn-primary navbar-btn">Dog Attacks</button>
+       				<button id="NoiseComplaintsBtn" type="button" class="btn btn-primary navbar-btn">Noise Complaints</button>
+				</div><!--/.nav-collapse -->
+      		</div>
+		</nav>
 		</div>
 	</div>
     <script>
@@ -70,10 +71,21 @@ require 'header.php';
 			document.getElementById("breedOrName").placeholder = this.innerHTML;	
 		});
 	}
+	//Add event listeners to buttons
 	document.getElementById("Searcherino").addEventListener("click", function(){
 		var input = document.getElementById("breedOrName").value;		
 		get("data.php?action=findanother&param="+document.getElementById("choiceSelector").value+"&input="+input,findanotherCallback)
 	});    
+	document.getElementById("DogAttacksBtn").addEventListener("click", function(){
+		get("data.php?action=dogattacks",showDogAttacks);
+	});
+	document.getElementById("NoiseComplaintsBtn").addEventListener("click", function(){
+        get("data.php?action=noisecomplaints",showNoiseComplaints);
+    });
+	document.getElementById("WalkingAreaBtn").addEventListener("click", function(){
+        get("data.php?action=walkingarea",showWalkingAreas);
+    });
+	//AJAXin'
 	function findanotherCallback(reply){
 		if(reply.trim()  == "0 results"){
 			alert("No results found for '"+document.getElementById("breedOrName").value+"'");
@@ -81,25 +93,16 @@ require 'header.php';
 			document.getElementById("breedOrName").focus();
 			return;
 		}
-		//Clean up map from last stuff
-		for(var i = 0; i < Circles.length; i++){
-			remove_circle(Circles[i]);
-		}
-		for(var i = 0; i < InfoWindows.length; i++){
-			InfoWindows[i].close();
-		}
-		Circles = [];
-		Content = [];	
-		InfoWindows = [];
+		clearMap();
 		var Data = JSON.parse(reply);
 		for(var counter = 0; counter < Data.results.length; counter++){
 			var lat = parseFloat(Data.results[counter].lat);
 			var lng = parseFloat(Data.results[counter].lng);
 			var circle = new google.maps.Circle({
-            	strokeColor: '#FF0000',
+            	strokeColor: '#00FF00',
             	strokeOpacity: 0.8,
             	strokeWeight: 2,
-            	fillColor: '#FF0000',
+            	fillColor: '#00FF00',
             	fillOpacity: 0.35,
             	map: map,
             	center: {lat: lat, lng: lng},
@@ -125,7 +128,124 @@ require 'header.php';
 		}
 		$("#myModal").modal("hide");
 	}
-	
+	function clearMap(){
+		//Clean up map from last stuff
+        for(var i = 0; i < Circles.length; i++){
+            remove_circle(Circles[i]);
+        }
+        for(var i = 0; i < InfoWindows.length; i++){
+            InfoWindows[i].close();
+        }
+        Circles = [];
+        Content = [];
+        InfoWindows = [];
+	}
+	//AJAXin'
+	function showDogAttacks(reply){
+		if(reply.trim()  == "0 results"){
+            alert("No results found");
+            return;
+        }
+        clearMap();
+        var Data = JSON.parse(reply);
+		for(var counter = 0; counter < Data.results.length; counter++){
+            var lat = parseFloat(Data.results[counter].lat);
+            var lng = parseFloat(Data.results[counter].lng);
+            var circle = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: map,
+                center: {lat: lat, lng: lng},
+                radius: Math.sqrt(Data.results[counter].count) * 100
+            });
+            circle.addListener('click', function(){
+                var index = Circles.indexOf(this);
+                var content = Content[index];
+                var infowindow = new google.maps.InfoWindow({
+                    content: content,
+                    position: {lat: this.center.lat(), lng: this.center.lng()}
+                });
+                InfoWindows.push(infowindow);
+                infowindow.open(map);
+            });
+            Content.push(Data.results[counter].suburb+" has "+Data.results[counter].count+" dog attacks");
+            Circles.push(circle);
+        }
+	}
+	function showNoiseComplaints(reply){
+		if(reply.trim()  == "0 results"){
+            alert("No results found");
+            return;
+        }
+        clearMap();
+        var Data = JSON.parse(reply);
+        for(var counter = 0; counter < Data.results.length; counter++){
+            var lat = parseFloat(Data.results[counter].lat);
+            var lng = parseFloat(Data.results[counter].lng);
+            var circle = new google.maps.Circle({
+                strokeColor: '#0000FF',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#0000FF',
+                fillOpacity: 0.35,
+                map: map,
+                center: {lat: lat, lng: lng},
+                radius: Math.sqrt(Data.results[counter].count) * 100
+            });
+            circle.addListener('click', function(){
+                var index = Circles.indexOf(this);
+                var content = Content[index];
+                var infowindow = new google.maps.InfoWindow({
+                    content: content,
+                    position: {lat: this.center.lat(), lng: this.center.lng()}
+                });
+                InfoWindows.push(infowindow);
+                infowindow.open(map);
+            });
+            Content.push(Data.results[counter].suburb+" has "+Data.results[counter].count+" noise complaints");
+            Circles.push(circle);
+        }
+
+	}
+	function showWalkingAreas(reply){
+		alert(reply);
+		return;
+		if(reply.trim()  == "0 results"){
+            alert("No results found");
+            return;
+        }
+        clearMap();
+        var Data = JSON.parse(reply);
+        for(var counter = 0; counter < Data.results.length; counter++){
+            var lat = parseFloat(Data.results[counter].lat);
+            var lng = parseFloat(Data.results[counter].lng);
+            var circle = new google.maps.Circle({
+                strokeColor: '#0000FF',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#0000FF',
+                fillOpacity: 0.35,
+                map: map,
+                center: {lat: lat, lng: lng},
+                radius: Math.sqrt(Data.results[counter].count) * 100
+            });
+            circle.addListener('click', function(){
+                var index = Circles.indexOf(this);
+                var content = Content[index];
+                var infowindow = new google.maps.InfoWindow({
+                    content: content,
+                    position: {lat: this.center.lat(), lng: this.center.lng()}
+                });
+                InfoWindows.push(infowindow);
+                infowindow.open(map);
+            });
+            Content.push(Data.results[counter].suburb+" has "+Data.results[counter].count+" noise complaints");
+            Circles.push(circle);
+        }
+	}
 	</script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYtR7QeOqFggI_F_cYu3ObacfijTq3pAI&callback=initMap"
     async defer></script>
