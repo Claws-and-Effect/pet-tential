@@ -30,15 +30,7 @@ require 'header.php';
 		</div>
 		<nav class="navbar navbar-default">
       		<div class="container">
-       			<div class="navbar-header">
-         				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-           				<span class="sr-only">Toggle navigation</span>
-           				<span class="icon-bar"></span>
-           				<span class="icon-bar"></span>
-           				<span class="icon-bar"></span>
-         				</button>
-       			</div>
-       			<div id="navbar" class="collapse navbar-collapse">
+       			<div id="navbar" class="">
            			<button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">Breed or Name</button>
 					<button id="DogAttacksBtn" type="button" class="btn btn-primary navbar-btn">Dog Attacks</button>
        				<button id="NoiseComplaintsBtn" type="button" class="btn btn-primary navbar-btn">Noise Complaints</button>
